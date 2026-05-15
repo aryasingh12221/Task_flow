@@ -1,0 +1,14 @@
+.env
+.env.local
+.env.production
+*.env
+target/
+node_modules/
+dist/
+.idea/
+*.iml
+.DS_Store
+*.class
+*.jar
+!**/mvnw
+!**/.mvn
