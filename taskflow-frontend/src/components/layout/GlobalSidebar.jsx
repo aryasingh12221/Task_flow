@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { useLocation, Link } from 'react-router-dom'
+import { useLocation, Link , useNavigate} from 'react-router-dom'
 import { Home, LayoutGrid, Users, Settings, LogOut } from 'lucide-react'
 import { useState } from 'react'
 import Avatar from '../common/Avatar'
@@ -9,6 +9,7 @@ import { getLastProjectId } from '../../utils/tokenUtils'
 
 export default function GlobalSidebar() {
   const location = useLocation()
+  const navigate = useNavigate()
   const { user, logout } = useAuth()
   const [open, setOpen] = useState(false)
   const [rect, setRect] = useState(null)
@@ -52,9 +53,7 @@ export default function GlobalSidebar() {
         })}
       </nav>
       <div className="mt-auto pb-2 flex flex-col items-center gap-1">
-        <motion.button onClick={onAvatarClick} whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }} className="rounded-full shadow-md">
-          <Avatar name={user?.name || 'TaskFlow User'} size={32} color={user?.avatarColor || '#0C66E4'} />
-        </motion.button>
+        
         <motion.button
           type="button"
           onClick={logout}
@@ -66,14 +65,7 @@ export default function GlobalSidebar() {
           <LogOut size={18} />
         </motion.button>
       </div>
-      <Dropdown isOpen={open} onClose={() => setOpen(false)} triggerRect={rect}>
-        <button className="flex w-full items-center gap-2 px-3 py-2 text-sm text-jira-text hover:bg-jira-overlay" onClick={() => setOpen(false)}>
-          <Users size={14} /> Profile
-        </button>
-        <button className="flex w-full items-center gap-2 px-3 py-2 text-sm text-jira-text hover:bg-jira-overlay" onClick={logout}>
-          <LogOut size={14} /> Sign out
-        </button>
-      </Dropdown>
+      
     </aside>
   )
 }

@@ -8,6 +8,7 @@ import api from '../../api/axios'
 import { useAuth } from '../../hooks/useAuth'
 import { saveLastProjectId } from '../../utils/tokenUtils'
 
+
 export default function AppShell({ children, project, members = [], currentUserRole, onAddMember, onRemoveMember }) {
   const location = useLocation()
   const { logout } = useAuth()

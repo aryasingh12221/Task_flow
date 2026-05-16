@@ -12,6 +12,7 @@ import NotFound from './pages/NotFound'
 import LandingPage from './pages/LandingPage'
 import AppShell from './components/layout/AppShell'
 import { BrowserRouter } from 'react-router-dom'
+import ProfilePage from './pages/ProfilePage'
 
 function ProtectedRoute() {
   const { isAuthenticated, loading } = useAuth()
@@ -45,6 +46,7 @@ export default function App() {
               <Route path="/projects/:id/board" element={<BoardPage />} />
               <Route path="/projects/:id/dashboard" element={<DashboardPage />} />
               <Route path="/projects/:id/settings" element={<ProjectSettingsPage />} />
+              <Route path="/profile" element={<ProfilePage />} />
             </Route>
           </Route>
           <Route path="*" element={<NotFound />} />
