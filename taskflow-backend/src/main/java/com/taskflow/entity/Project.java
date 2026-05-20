@@ -39,6 +39,10 @@ public class Project {
     @JoinColumn(name = "created_by", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private User createdBy;
 
+    @Builder.Default
+    @Column(name = "is_public", nullable = false)
+    private boolean isPublic = true;
+
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private Instant createdAt;

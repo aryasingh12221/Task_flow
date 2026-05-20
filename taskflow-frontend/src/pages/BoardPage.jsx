@@ -22,6 +22,7 @@ export default function BoardPage() {
   const [selectedIssue, setSelectedIssue] = useState(null)
   const [initialStatus, setInitialStatus] = useState('TODO')
   const [search, setSearch] = useState('')
+  const [priorityFilter, setPriorityFilter] = useState('ALL')
 
   const load = async () => {
     try {
@@ -41,11 +42,17 @@ export default function BoardPage() {
   useEffect(() => { load() }, [])
 
   const visibleIssues = useMemo(() => {
-    const projectIssues = project?.myRole === 'ADMIN' || !user?.id
+    let projectIssues = project?.myRole === 'ADMIN' || !user?.id
       ? issues
       : issues.filter((issue) => issue.assignee?.id === user.id)
+    
+    if (priorityFilter !== 'ALL') {
+      projectIssues = projectIssues.filter((issue) => issue.priority === priorityFilter)
+    }
+    
     return projectIssues.filter((issue) => issue.title.toLowerCase().includes(search.toLowerCase()))
-  }, [issues, project?.myRole, search, user?.id])
+  }, [issues, project?.myRole, search, user?.id, priorityFilter])
+
   const members = shell.members || []
   const currentUserRole = shell.currentUserRole || project?.myRole || 'MEMBER'
   const activeProject = shell.project || project || {id}
@@ -88,6 +95,28 @@ export default function BoardPage() {
     }
   }
 
+  const handleIssueDrop = async (issueId, newStatus) => {
+    const issueToUpdate = issues.find((i) => i.id === issueId)
+    if (!issueToUpdate) return
+    if (issueToUpdate.status === newStatus) return
+
+    try {
+      const response = await api.patch(`/issues/${issueId}`, {
+        title: issueToUpdate.title,
+        description: issueToUpdate.description,
+        issueType: issueToUpdate.issueType,
+        priority: issueToUpdate.priority,
+        status: newStatus,
+        dueDate: issueToUpdate.dueDate,
+        assigneeId: issueToUpdate.assignee?.id || null
+      })
+      setIssues((current) => current.map((issue) => issue.id === response.data.id ? response.data : issue))
+      toast.success(`Issue moved to ${newStatus.replace('_', ' ')}`)
+    } catch (error) {
+      toast.error(error?.response?.data?.message || 'Failed to move issue')
+    }
+  }
+
   const deleteIssue = async (id) => {
     if (!window.confirm('Delete this issue?')) return
     try {
@@ -104,14 +133,33 @@ export default function BoardPage() {
     <div>
       <TopBar breadcrumb={[{ label: 'Projects', to: '/projects' }, { label: project?.name || 'Project' }, { label: 'Board' }]} actionLabel={project?.myRole === 'ADMIN' ? 'Create issue' : undefined} onAction={() => { setInitialStatus('TODO'); setModalOpen(true) }} />
       <div className="flex flex-col gap-3 border-b border-jira-border px-4 py-3 sm:flex-row sm:items-center sm:px-6">
-        <div className="w-full sm:w-72"><Input placeholder="Search issues" value={search} onChange={(event) => setSearch(event.target.value)} /></div>
+        <div className="w-full sm:w-72">
+          <Input placeholder="Search issues" value={search} onChange={(event) => setSearch(event.target.value)} />
+        </div>
+        
+        <div className="flex flex-col sm:w-48">
+          <select
+            value={priorityFilter}
+            onChange={(e) => setPriorityFilter(e.target.value)}
+            className="w-full rounded border border-jira-border bg-jira-elevated px-3 py-1.5 text-sm text-jira-text outline-none focus:border-jira-blue"
+          >
+            <option value="ALL">All Priorities</option>
+            <option value="LOW">Low</option>
+            <option value="MEDIUM">Medium</option>
+            <option value="HIGH">High</option>
+            <option value="CRITICAL">Critical</option>
+          </select>
+        </div>
+
         <Button variant="secondary" size="sm" onClick={load}>Refresh</Button>
       </div>
+      
       <KanbanBoard
         issues={visibleIssues}
         canCreate={currentUserRole === 'ADMIN'}
         onIssueClick={(issue) => { setSelectedIssue(issue); setPanelOpen(true) }}
         onCreateIssue={(status) => { setInitialStatus(status); setModalOpen(true) }}
+        onIssueDrop={handleIssueDrop}
       />
       <CreateIssueModal isOpen={modalOpen} onClose={() => setModalOpen(false)} project={activeProject} members={members} initialStatus={initialStatus} onCreate={createIssue} />
       <IssueDetailPanel isOpen={panelOpen} onClose={() => setPanelOpen(false)} issue={selectedIssue} members={members} canEdit={true} onSave={saveIssue} onDelete={deleteIssue} />

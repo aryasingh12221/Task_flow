@@ -21,4 +21,8 @@ public class SignupRequest {
     @NotBlank
     @Size(min = 6, max = 128)
     private String password;
+
+    private String role;
+
+    private String adminAccessKey;
 }

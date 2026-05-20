@@ -4,6 +4,7 @@ import com.taskflow.dto.request.CreateProjectRequest;
 import com.taskflow.dto.request.AddMemberRequest;
 import com.taskflow.dto.response.ProjectDetailResponse;
 import com.taskflow.dto.response.ProjectResponse;
+import com.taskflow.dto.response.JoinRequestResponse;
 import com.taskflow.service.ProjectService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -56,5 +57,30 @@ public class ProjectController {
     public ResponseEntity<Void> deleteProject(@PathVariable Long projectId, Authentication auth) {
         projectService.deleteProject(projectId, auth.getName());
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/explore")
+    public ResponseEntity<List<ProjectResponse>> getPublicProjects(Authentication auth) {
+        return ResponseEntity.ok(projectService.getPublicProjects(auth.getName()));
+    }
+
+    @PostMapping("/{projectId}/join")
+    public ResponseEntity<JoinRequestResponse> createJoinRequest(@PathVariable Long projectId, Authentication auth) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(projectService.createJoinRequest(projectId, auth.getName()));
+    }
+
+    @GetMapping("/{projectId}/join-requests")
+    public ResponseEntity<List<JoinRequestResponse>> getJoinRequests(@PathVariable Long projectId, Authentication auth) {
+        return ResponseEntity.ok(projectService.getJoinRequests(projectId, auth.getName()));
+    }
+
+    @PostMapping("/{projectId}/join-requests/{requestId}/resolve")
+    public ResponseEntity<Void> resolveJoinRequest(
+            @PathVariable Long projectId,
+            @PathVariable Long requestId,
+            @RequestBody java.util.Map<String, String> body,
+            Authentication auth) {
+        projectService.processJoinRequest(projectId, requestId, body.get("status"), auth.getName());
+        return ResponseEntity.ok().build();
     }
 }

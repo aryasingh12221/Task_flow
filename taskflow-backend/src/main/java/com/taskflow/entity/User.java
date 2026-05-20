@@ -31,6 +31,13 @@ public class User {
     @Column(name = "avatar_color", length = 20)
     private String avatarColor;
 
+    @Builder.Default
+    @Column(nullable = false, length = 20)
+    private String role = "MEMBER";
+
+    @Column(name = "openai_api_key", length = 255)
+    private String openaiApiKey;
+
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private Instant createdAt;

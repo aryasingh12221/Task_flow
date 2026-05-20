@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 import { useLocation, Link } from 'react-router-dom'
-import { Home, LayoutGrid, Users, Settings, LogOut } from 'lucide-react'
+import { Home, LayoutGrid, Users, Settings, LogOut, Compass, Activity, BarChart2 } from 'lucide-react'
 import { useState } from 'react'
 import Avatar from '../common/Avatar'
 import Dropdown from '../common/Dropdown'
@@ -20,9 +20,11 @@ export default function GlobalSidebar() {
 
   const navItems = [
     { to: '/projects', icon: Home, label: 'Projects' },
+    { to: '/explore', icon: Compass, label: 'Explore' },
     { to: projectBoardPath, icon: LayoutGrid, label: 'Board' },
     { to: projectSettingsPath, icon: Users, label: 'Members' },
-    { to: projectDashboardPath, icon: Settings, label: 'Dashboard' }
+    { to: projectDashboardPath, icon: BarChart2, label: 'Dashboard' },
+    { to: '/telemetry', icon: Activity, label: 'Telemetry' }
   ]
 
   const onAvatarClick = (event) => {
@@ -37,7 +39,7 @@ export default function GlobalSidebar() {
       </motion.div>
       <nav className="mt-2 flex flex-col items-center gap-1">
         {navItems.map(({ to, icon: Icon, label }) => {
-          const active = location.pathname.startsWith(to)
+          const active = location.pathname === to || (to !== '/projects' && location.pathname.startsWith(to))
           return (
             <motion.div key={label} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Link
@@ -67,9 +69,9 @@ export default function GlobalSidebar() {
         </motion.button>
       </div>
       <Dropdown isOpen={open} onClose={() => setOpen(false)} triggerRect={rect}>
-        <button className="flex w-full items-center gap-2 px-3 py-2 text-sm text-jira-text hover:bg-jira-overlay" onClick={() => setOpen(false)}>
-          <Users size={14} /> Profile
-        </button>
+        <Link to="/settings" className="flex w-full items-center gap-2 px-3 py-2 text-sm text-jira-text hover:bg-jira-overlay" onClick={() => setOpen(false)}>
+          <Settings size={14} /> User Settings
+        </Link>
         <button className="flex w-full items-center gap-2 px-3 py-2 text-sm text-jira-text hover:bg-jira-overlay" onClick={logout}>
           <LogOut size={14} /> Sign out
         </button>

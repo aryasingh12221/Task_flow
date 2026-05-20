@@ -6,7 +6,7 @@ const columns = [
   { status: 'DONE', label: 'DONE' }
 ]
 
-export default function KanbanBoard({ issues = [], canCreate = false, onIssueClick, onCreateIssue }) {
+export default function KanbanBoard({ issues = [], canCreate = false, onIssueClick, onCreateIssue, onIssueDrop }) {
   return (
     <div className="flex gap-4 overflow-x-auto p-6">
       {columns.map((column, i) => (
@@ -19,6 +19,7 @@ export default function KanbanBoard({ issues = [], canCreate = false, onIssueCli
           canCreate={canCreate}
           onCreateIssue={onCreateIssue}
           onIssueClick={onIssueClick}
+          onIssueDrop={onIssueDrop}
         />
       ))}
     </div>

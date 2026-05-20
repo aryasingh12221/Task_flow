@@ -8,6 +8,9 @@ import ProjectsPage from './pages/ProjectsPage'
 import BoardPage from './pages/BoardPage'
 import DashboardPage from './pages/DashboardPage'
 import ProjectSettingsPage from './pages/ProjectSettingsPage'
+import UserSettingsPage from './pages/UserSettingsPage'
+import ExploreProjectsPage from './pages/ExploreProjectsPage'
+import TelemetryPage from './pages/TelemetryPage'
 import NotFound from './pages/NotFound'
 import LandingPage from './pages/LandingPage'
 import AppShell from './components/layout/AppShell'
@@ -41,6 +44,9 @@ export default function App() {
           <Route element={<ProtectedRoute />}>
             <Route element={<ShellRoute />}>
               <Route path="/projects" element={<ProjectsPage />} />
+              <Route path="/explore" element={<ExploreProjectsPage />} />
+              <Route path="/settings" element={<UserSettingsPage />} />
+              <Route path="/telemetry" element={<TelemetryPage />} />
               <Route path="/projects/:id/board" element={<BoardPage />} />
               <Route path="/projects/:id/dashboard" element={<DashboardPage />} />
               <Route path="/projects/:id/settings" element={<ProjectSettingsPage />} />
