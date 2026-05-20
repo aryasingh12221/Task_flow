@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { useLocation, Link } from 'react-router-dom'
+import { useLocation, Link, useNavigate } from 'react-router-dom'
 import { Home, LayoutGrid, Users, Settings, LogOut, Compass, Activity, BarChart2 } from 'lucide-react'
 import { useState } from 'react'
 import Avatar from '../common/Avatar'
@@ -9,6 +9,7 @@ import { getLastProjectId } from '../../utils/tokenUtils'
 
 export default function GlobalSidebar() {
   const location = useLocation()
+  const navigate = useNavigate()
   const { user, logout } = useAuth()
   const [open, setOpen] = useState(false)
   const [rect, setRect] = useState(null)

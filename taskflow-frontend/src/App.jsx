@@ -14,6 +14,8 @@ import TelemetryPage from './pages/TelemetryPage'
 import NotFound from './pages/NotFound'
 import LandingPage from './pages/LandingPage'
 import AppShell from './components/layout/AppShell'
+import { BrowserRouter } from 'react-router-dom'
+import ProfilePage from './pages/ProfilePage'
 
 function ProtectedRoute() {
   const { isAuthenticated, loading } = useAuth()
@@ -32,7 +34,7 @@ function ShellRoute() {
 
 export default function App() {
   return (
-    <HashRouter>
+    <BrowserRouter>
       <AuthProvider>
         <Toaster position="top-right" toastOptions={{ style: { background: '#282E33', color: '#B6C2CF', border: '1px solid #2C333A', borderRadius: '4px', fontSize: '14px' }, success: { iconTheme: { primary: '#4BCE97', secondary: '#282E33' } }, error: { iconTheme: { primary: '#F87168', secondary: '#282E33' } } }} />
         <Routes>
@@ -50,11 +52,12 @@ export default function App() {
               <Route path="/projects/:id/board" element={<BoardPage />} />
               <Route path="/projects/:id/dashboard" element={<DashboardPage />} />
               <Route path="/projects/:id/settings" element={<ProjectSettingsPage />} />
+              <Route path="/profile" element={<ProfilePage />} />
             </Route>
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
       </AuthProvider>
-    </HashRouter>
+    </BrowserRouter>
   )
 }

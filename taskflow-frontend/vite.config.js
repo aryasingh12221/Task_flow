@@ -5,7 +5,7 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      '/api': 'http://localhost:8080'
+      '/api': 'https://taskflow-production-c73b.up.railway.app'
     }
   },
   build: {
