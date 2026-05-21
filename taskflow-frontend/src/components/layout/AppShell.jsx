@@ -93,6 +93,7 @@ export default function AppShell({ children, project, members = [], currentUserR
     { to: `/projects/${id}/settings`, label: 'Settings', icon: Settings },
     { to: '/projects', label: 'Projects', icon: Home }
   ] : [
+    { to: '/dashboard', label: 'Ops Dashboard', icon: LayoutDashboard },
     { to: '/projects', label: 'Projects', icon: Home }
   ]
 

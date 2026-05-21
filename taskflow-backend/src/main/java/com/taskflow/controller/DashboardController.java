@@ -22,4 +22,9 @@ public class DashboardController {
     public ResponseEntity<DashboardResponse> getDashboard(Authentication auth) {
         return ResponseEntity.ok(dashboardService.getDashboard(auth.getName()));
     }
+
+    @GetMapping("/eod")
+    public ResponseEntity<String> getEodReportMarkdown(Authentication auth) {
+        return ResponseEntity.ok(dashboardService.getDashboard(auth.getName()).getEodReport().getMarkdownSummary());
+    }
 }

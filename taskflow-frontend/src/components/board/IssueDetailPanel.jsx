@@ -42,7 +42,9 @@ export default function IssueDetailPanel({ isOpen, onClose, issue, members = [],
           <div className="space-y-4 p-4 lg:p-6">
             <Select label="Status" value={current.status} disabled={!canEdit} onChange={(e) => update({ status: e.target.value })}>
               <option value="TODO">To Do</option>
+              <option value="PENDING">Pending</option>
               <option value="IN_PROGRESS">In Progress</option>
+              <option value="BLOCKED">Blocked</option>
               <option value="DONE">Done</option>
             </Select>
             <Select label="Assignee" value={current.assignee?.id || ''} disabled={!canEdit} onChange={(e) => update({ assignee: members.find((member) => String(member.user?.id || member.id) === e.target.value)?.user || null })}>

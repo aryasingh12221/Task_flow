@@ -2,8 +2,10 @@ import KanbanColumn from './KanbanColumn'
 
 const columns = [
   { status: 'TODO', label: 'TO DO' },
+  { status: 'PENDING', label: 'PENDING' },
   { status: 'IN_PROGRESS', label: 'IN PROGRESS' },
-  { status: 'DONE', label: 'DONE' }
+  { status: 'BLOCKED', label: 'BLOCKED' },
+  { status: 'DONE', label: 'COMPLETED' }
 ]
 
 export default function KanbanBoard({ issues = [], canCreate = false, onIssueClick, onCreateIssue, onIssueDrop }) {

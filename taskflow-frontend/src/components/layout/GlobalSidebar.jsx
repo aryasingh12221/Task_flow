@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 import { useLocation, Link, useNavigate } from 'react-router-dom'
-import { Home, LayoutGrid, Users, Settings, LogOut, Compass, Activity, BarChart2 } from 'lucide-react'
+import { Home, LayoutGrid, Users, Settings, LogOut, Compass, Activity, BarChart2, LayoutDashboard } from 'lucide-react'
 import { useState } from 'react'
 import Avatar from '../common/Avatar'
 import Dropdown from '../common/Dropdown'
@@ -20,11 +20,12 @@ export default function GlobalSidebar() {
   const projectDashboardPath = lastProjectId ? `/projects/${lastProjectId}/dashboard` : '/projects'
 
   const navItems = [
+    { to: '/dashboard', icon: LayoutDashboard, label: 'Ops Dashboard' },
     { to: '/projects', icon: Home, label: 'Projects' },
     { to: '/explore', icon: Compass, label: 'Explore' },
     { to: projectBoardPath, icon: LayoutGrid, label: 'Board' },
     { to: projectSettingsPath, icon: Users, label: 'Members' },
-    { to: projectDashboardPath, icon: BarChart2, label: 'Dashboard' },
+    { to: projectDashboardPath, icon: BarChart2, label: 'Project Dashboard' },
     { to: '/telemetry', icon: Activity, label: 'Telemetry' }
   ]
 

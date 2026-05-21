@@ -16,6 +16,7 @@ import LandingPage from './pages/LandingPage'
 import AppShell from './components/layout/AppShell'
 import { BrowserRouter } from 'react-router-dom'
 import ProfilePage from './pages/ProfilePage'
+import CentralizedDashboardPage from './pages/CentralizedDashboardPage'
 
 function ProtectedRoute() {
   const { isAuthenticated, loading } = useAuth()
@@ -25,7 +26,7 @@ function ProtectedRoute() {
 
 function PublicRoute() {
   const { isAuthenticated } = useAuth()
-  return isAuthenticated ? <Navigate to="/projects" replace /> : <Outlet />
+  return isAuthenticated ? <Navigate to="/dashboard" replace /> : <Outlet />
 }
 
 function ShellRoute() {
@@ -45,6 +46,7 @@ export default function App() {
           </Route>
           <Route element={<ProtectedRoute />}>
             <Route element={<ShellRoute />}>
+              <Route path="/dashboard" element={<CentralizedDashboardPage />} />
               <Route path="/projects" element={<ProjectsPage />} />
               <Route path="/explore" element={<ExploreProjectsPage />} />
               <Route path="/settings" element={<UserSettingsPage />} />
