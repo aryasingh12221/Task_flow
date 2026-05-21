@@ -43,6 +43,9 @@ public class ProjectService {
     @Transactional
     public ProjectResponse createProject(CreateProjectRequest req, String creatorEmail) {
         User creator = userRepository.findByEmail(creatorEmail).orElseThrow(() -> new ResourceNotFoundException("Creator not found"));
+        if ("MEMBER".equalsIgnoreCase(creator.getRole())) {
+            throw new UnauthorizedException("Members are not allowed to create projects");
+        }
         String baseKey = generateKeyFromName(req.getName());
         String key = baseKey;
         int suffix = 1;
@@ -233,6 +236,9 @@ public class ProjectService {
         User user = userRepository.findByEmail(userEmail).orElseThrow(() -> new ResourceNotFoundException("User not found"));
         if ("SYSTEM_ADMIN".equals(user.getRole())) {
             return;
+        }
+        if ("MEMBER".equalsIgnoreCase(user.getRole())) {
+            throw new UnauthorizedException("Members are not allowed to perform admin tasks");
         }
         ProjectMember member = projectMemberRepository.findByProjectIdAndUserId(projectId, user.getId()).orElseThrow(() -> new UnauthorizedException("You are not a member of this project"));
         if (member.getRole() != ProjectRole.ADMIN) {

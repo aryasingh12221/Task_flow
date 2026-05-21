@@ -5,11 +5,14 @@ import TopBar from '../components/layout/TopBar'
 import ProjectsTable from '../components/projects/ProjectsTable'
 import CreateProjectModal from '../components/projects/CreateProjectModal'
 import { getLastProjectId, saveLastProjectId } from '../utils/tokenUtils'
+import { useAuth } from '../hooks/useAuth'
 
 export default function ProjectsPage() {
+  const { user } = useAuth()
   const [projects, setProjects] = useState([])
   const [loading, setLoading] = useState(true)
   const [open, setOpen] = useState(false)
+  const isMember = user?.role === 'MEMBER'
 
   const load = async () => {
     try {
@@ -41,12 +44,16 @@ export default function ProjectsPage() {
 
   return (
     <div>
-      <TopBar breadcrumb={[{ label: 'Projects' }]} actionLabel="Create project" onAction={() => setOpen(true)} />
+      <TopBar 
+        breadcrumb={[{ label: 'Projects' }]} 
+        actionLabel={isMember ? null : "Create project"} 
+        onAction={isMember ? null : () => setOpen(true)} 
+      />
       <div className="p-6">
         <div className="mb-6 text-2xl font-medium text-jira-text">Projects</div>
-        <ProjectsTable projects={projects} loading={loading} onCreate={() => setOpen(true)} />
+        <ProjectsTable projects={projects} loading={loading} onCreate={() => setOpen(true)} canCreate={!isMember} />
       </div>
-      <CreateProjectModal isOpen={open} onClose={() => setOpen(false)} onCreate={createProject} />
+      {!isMember && <CreateProjectModal isOpen={open} onClose={() => setOpen(false)} onCreate={createProject} />}
     </div>
   )
 }

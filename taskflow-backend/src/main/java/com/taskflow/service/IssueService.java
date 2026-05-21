@@ -8,6 +8,7 @@ import com.taskflow.entity.Issue;
 import com.taskflow.entity.Project;
 import com.taskflow.entity.User;
 import com.taskflow.exception.ResourceNotFoundException;
+import com.taskflow.exception.UnauthorizedException;
 import com.taskflow.repository.IssueRepository;
 import com.taskflow.repository.ProjectMemberRepository;
 import com.taskflow.repository.ProjectRepository;
@@ -103,8 +104,17 @@ public class IssueService {
     }
 
     @Transactional
-    public void deleteIssue(Long id) {
+    public void deleteIssue(Long id, String userEmail) {
         Issue issue = issueRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Issue not found"));
+        User user = userRepository.findByEmail(userEmail).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        
+        if ("MEMBER".equalsIgnoreCase(user.getRole())) {
+            boolean isOwnTask = (issue.getReporter() != null && issue.getReporter().getId().equals(user.getId()))
+                    || (issue.getAssignee() != null && issue.getAssignee().getId().equals(user.getId()));
+            if (!isOwnTask) {
+                throw new UnauthorizedException("Members cannot delete other people's tasks");
+            }
+        }
         issueRepository.delete(issue);
     }
 

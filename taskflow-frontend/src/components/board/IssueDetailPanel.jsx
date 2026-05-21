@@ -7,8 +7,10 @@ import Textarea from '../common/Textarea'
 import Avatar from '../common/Avatar'
 import { IssueTypeIcon, PriorityIcon } from '../common/Badge'
 import { formatDateTime } from '../../utils/dateUtils'
+import { useAuth } from '../../hooks/useAuth'
 
 export default function IssueDetailPanel({ isOpen, onClose, issue, members = [], canEdit = false, onSave, onDelete }) {
+  const { user } = useAuth()
   const [form, setForm] = useState(issue || null)
 
   useEffect(() => {
@@ -18,6 +20,20 @@ export default function IssueDetailPanel({ isOpen, onClose, issue, members = [],
   if (!issue) return <SlidePanel isOpen={isOpen} onClose={onClose} />
 
   const current = form || issue
+
+  const canDelete = () => {
+    if (!user) return false
+    if (user.role === 'MEMBER') {
+      const userId = user.id
+      const userEmail = user.email
+      
+      const isAssignee = current.assignee && (current.assignee.id === userId || current.assignee.email === userEmail)
+      const isReporter = current.reporter && (current.reporter.id === userId || current.reporter.email === userEmail)
+      
+      return isAssignee || isReporter
+    }
+    return true
+  }
 
   const update = (patch) => setForm((value) => ({ ...(value || issue), ...patch }))
 
@@ -30,7 +46,7 @@ export default function IssueDetailPanel({ isOpen, onClose, issue, members = [],
             {canEdit ? <Input value={current.title} onChange={(e) => update({ title: e.target.value })} className="text-base font-medium sm:text-xl" /> : <div className="break-words text-xl font-medium text-jira-text sm:text-2xl">{current.title}</div>}
           </div>
           <div className="flex flex-wrap gap-2 sm:justify-end">
-            {canEdit && <Button variant="danger" onClick={() => onDelete?.(current.id)}>Delete</Button>}
+            {canEdit && canDelete() && <Button variant="danger" onClick={() => onDelete?.(current.id)}>Delete</Button>}
             <Button onClick={() => onSave?.(current)}>Save</Button>
           </div>
         </div>

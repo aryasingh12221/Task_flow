@@ -61,12 +61,22 @@ export default function CentralizedDashboardPage() {
   useEffect(() => {
     fetchDashboard()
     if (user?.role) {
-      setSelectedRole(user.role)
+      setSelectedRole(user.role === 'MEMBER' ? 'MEMBER' : user.role)
     }
   }, [user])
 
+  useEffect(() => {
+    if (user?.role === 'MEMBER' && (activeTab === 'team' || activeTab === 'forecasting')) {
+      setActiveTab('overview')
+    }
+  }, [activeTab, user])
+
   // Custom role change handler for demo purposes
   const handleRoleChange = (role) => {
+    if (user?.role === 'MEMBER') {
+      setSelectedRole('MEMBER')
+      return
+    }
     setSelectedRole(role)
     toast.success(`Switched cockpit view to ${role.replace('_', ' ')}`)
   }
@@ -171,32 +181,34 @@ export default function CentralizedDashboardPage() {
       />
 
       {/* Role Picker Banner */}
-      <div className="mx-4 mt-4 sm:mx-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 rounded-lg border border-jira-blue/20 bg-jira-blue-bg/40 p-3 sm:px-4">
-        <div className="flex items-center gap-2 text-sm text-jira-blue-bold font-medium">
-          <Shield size={16} />
-          <span>Role-Based Cockpit Simulator:</span>
+      {user?.role !== 'MEMBER' && (
+        <div className="mx-4 mt-4 sm:mx-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 rounded-lg border border-jira-blue/20 bg-jira-blue-bg/40 p-3 sm:px-4">
+          <div className="flex items-center gap-2 text-sm text-jira-blue-bold font-medium">
+            <Shield size={16} />
+            <span>Role-Based Cockpit Simulator:</span>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <button 
+              onClick={() => handleRoleChange('SYSTEM_ADMIN')}
+              className={`flex items-center gap-1 text-xs px-2.5 py-1.5 rounded font-semibold border transition-all ${selectedRole === 'SYSTEM_ADMIN' ? 'bg-jira-blue text-white border-jira-blue shadow' : 'bg-jira-elevated text-jira-text-subtle border-jira-border hover:text-jira-text'}`}
+            >
+              <Shield size={12} /> Admin Cockpit
+            </button>
+            <button 
+              onClick={() => handleRoleChange('MANAGER')}
+              className={`flex items-center gap-1 text-xs px-2.5 py-1.5 rounded font-semibold border transition-all ${selectedRole === 'MANAGER' ? 'bg-jira-blue text-white border-jira-blue shadow' : 'bg-jira-elevated text-jira-text-subtle border-jira-border hover:text-jira-text'}`}
+            >
+              <UserCheck size={12} /> Manager Cockpit
+            </button>
+            <button 
+              onClick={() => handleRoleChange('MEMBER')}
+              className={`flex items-center gap-1 text-xs px-2.5 py-1.5 rounded font-semibold border transition-all ${selectedRole === 'MEMBER' ? 'bg-jira-blue text-white border-jira-blue shadow' : 'bg-jira-elevated text-jira-text-subtle border-jira-border hover:text-jira-text'}`}
+            >
+              <Users size={12} /> Team Member Cockpit
+            </button>
+          </div>
         </div>
-        <div className="flex flex-wrap gap-2">
-          <button 
-            onClick={() => handleRoleChange('SYSTEM_ADMIN')}
-            className={`flex items-center gap-1 text-xs px-2.5 py-1.5 rounded font-semibold border transition-all ${selectedRole === 'SYSTEM_ADMIN' ? 'bg-jira-blue text-white border-jira-blue shadow' : 'bg-jira-elevated text-jira-text-subtle border-jira-border hover:text-jira-text'}`}
-          >
-            <Shield size={12} /> Admin Cockpit
-          </button>
-          <button 
-            onClick={() => handleRoleChange('MANAGER')}
-            className={`flex items-center gap-1 text-xs px-2.5 py-1.5 rounded font-semibold border transition-all ${selectedRole === 'MANAGER' ? 'bg-jira-blue text-white border-jira-blue shadow' : 'bg-jira-elevated text-jira-text-subtle border-jira-border hover:text-jira-text'}`}
-          >
-            <UserCheck size={12} /> Manager Cockpit
-          </button>
-          <button 
-            onClick={() => handleRoleChange('MEMBER')}
-            className={`flex items-center gap-1 text-xs px-2.5 py-1.5 rounded font-semibold border transition-all ${selectedRole === 'MEMBER' ? 'bg-jira-blue text-white border-jira-blue shadow' : 'bg-jira-elevated text-jira-text-subtle border-jira-border hover:text-jira-text'}`}
-          >
-            <Users size={12} /> Team Member Cockpit
-          </button>
-        </div>
-      </div>
+      )}
 
       <div className="p-4 sm:p-6">
         {/* Dashboard Navigation Tabs */}

@@ -43,8 +43,8 @@ public class IssueController {
     }
 
     @DeleteMapping("/api/issues/{id}")
-    public ResponseEntity<Void> deleteIssue(@PathVariable Long id) {
-        issueService.deleteIssue(id);
+    public ResponseEntity<Void> deleteIssue(@PathVariable Long id, Authentication auth) {
+        issueService.deleteIssue(id, auth.getName());
         return ResponseEntity.noContent().build();
     }
 }
