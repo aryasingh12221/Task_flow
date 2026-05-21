@@ -30,4 +30,9 @@ public class UserController {
         userService.deleteAccount(email);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping
+    public ResponseEntity<java.util.List<UserResponse>> getAllUsers() {
+        return ResponseEntity.ok(userService.getAllUsers());
+    }
 }

@@ -78,4 +78,11 @@ public class UserService {
         // 6. Delete user
         userRepository.delete(user);
     }
+
+    @Transactional(readOnly = true)
+    public java.util.List<UserResponse> getAllUsers() {
+        return userRepository.findAll().stream()
+                .map(user -> new UserResponse(user.getId(), user.getName(), user.getEmail(), user.getAvatarColor()))
+                .collect(java.util.stream.Collectors.toList());
+    }
 }
